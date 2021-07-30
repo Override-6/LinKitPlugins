@@ -13,7 +13,7 @@
 package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
-import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind
+import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind
 import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
 import fr.linkit.engine.connection.cache.obj.description.WrapperBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory

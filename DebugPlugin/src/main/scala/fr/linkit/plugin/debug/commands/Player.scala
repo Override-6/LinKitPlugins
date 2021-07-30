@@ -12,8 +12,8 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL
-import fr.linkit.api.connection.cache.repo.description.annotation.{MethodControl => MC}
+import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_LOCAL
+import fr.linkit.api.connection.cache.obj.description.annotation.{MethodControl => MC}
 
 import scala.annotation.meta.getter
 
