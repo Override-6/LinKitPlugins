@@ -14,10 +14,10 @@ package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind
-import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
+import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
 import fr.linkit.engine.connection.cache.obj.description.WrapperBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory
-import fr.linkit.engine.connection.cache.obj.description.{TreeViewDefaultBehavior, WrapperBehaviorBuilder}
+import fr.linkit.engine.connection.cache.obj.description.{ObjectTreeDefaultBehavior, WrapperBehaviorBuilder}
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
 import scala.collection.mutable.ListBuffer
@@ -27,7 +27,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
     /*println("Press enter to continue...")
     new Scanner(System.in).nextLine()*/
 
-    private val tree = new TreeViewDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
+    private val tree = new ObjectTreeDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
     new WrapperBehaviorBuilder[ListBuffer[Player]](tree) {
         annotateAll by MethodControl(InvocationKind.ONLY_LOCAL)
         annotateAll("+=") and "addOne" by MethodControl(InvocationKind.LOCAL_AND_REMOTES, synchronizedParams = Seq(true))
@@ -36,7 +36,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
         annotate("toString") by MethodControl(InvocationKind.ONLY_LOCAL)
     }.build
 
-    private val repo    = cacheHandler.retrieveCache(50, DefaultEngineObjectCenter[ListBuffer[Player]](tree))
+    private val repo    = cacheHandler.retrieveCache(50, DefaultSynchronizedObjectCenter[ListBuffer[Player]](tree))
     private val players = repo.findObject(0).getOrElse(repo.postObject(0, ListBuffer.empty[Player]))
     println(s"players = ${players}")
     /*println(s"players.getClass.getDeclaredFields = ${players.getClass.getDeclaredFields.mkString("Array(", ", ", ")")}")
