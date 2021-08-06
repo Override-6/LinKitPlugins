@@ -12,23 +12,18 @@
 
 package fr.linkit.plugin.debug.commands
 
-import fr.linkit.api.connection.cache.obj.behavior.annotation.InvocationKind.ONLY_LOCAL
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule.BROADCAST
 import fr.linkit.api.connection.cache.obj.behavior.annotation.{MethodControl => MC}
 
-import scala.annotation.meta.{getter, setter}
+import scala.annotation.meta.setter
 import scala.collection.mutable.ListBuffer
 
-case class Player(@(MC@getter)(ONLY_LOCAL) id: Int,
-                  @(MC@getter)(ONLY_LOCAL) owner: String,
-                  @(MC@getter)(ONLY_LOCAL) var name: String,
-                  @(MC@getter)(ONLY_LOCAL) var x: Long,
-                  @(MC@getter)(ONLY_LOCAL) var y: Long) extends Serializable {
-
-    private val own = this
-
-    @(MC@setter)(ONLY_LOCAL)
+case class Player(@(MC@setter)(BROADCAST) id: Int,
+                  @(MC@setter)(BROADCAST) owner: String,
+                  @(MC@setter)(BROADCAST) var name: String,
+                  @(MC@setter)(BROADCAST) var x: Long,
+                  @(MC@setter)(BROADCAST) var y: Long) extends Serializable {
     var list: ListBuffer[_] = ListBuffer.empty
-
     def this(other: Player) = {
         this(other.id, other.owner, other.name, other.x, other.y)
     }
