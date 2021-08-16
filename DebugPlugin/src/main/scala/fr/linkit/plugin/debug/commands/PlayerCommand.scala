@@ -14,9 +14,10 @@ package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule
+import fr.linkit.api.connection.cache.obj.behavior.member.MethodParameterBehavior
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
-import fr.linkit.engine.connection.cache.obj.behavior.WrapperBehaviorBuilder.MethodControl
-import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, WrapperBehaviorBuilder, WrapperBehaviorTreeBuilder}
+import fr.linkit.engine.connection.cache.obj.behavior.SynchronizedObjectBuilder.MethodControl
+import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, SynchronizedObjectBuilder, SynchronizedObjectStoreBuilder}
 import fr.linkit.plugin.controller.cli.{CommandException, CommandExecutor, CommandUtils}
 
 import scala.collection.mutable.ListBuffer
@@ -26,9 +27,9 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
     /*println("Press enter to continue...")
     new Scanner(System.in).nextLine()*/
 
-    private val tree = new WrapperBehaviorTreeBuilder(AnnotationBasedMemberBehaviorFactory) {
-        behaviors += new WrapperBehaviorBuilder[ListBuffer[Player]]() {
-            annotateAllMethods("+=") and "addOne" by MethodControl(BasicInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
+    private val tree = new SynchronizedObjectStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
+        behaviors += new SynchronizedObjectBuilder[ListBuffer[Player]]() {
+            annotateAllMethods("+=") and "addOne" by MethodControl(BasicInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(MethodParameterBehavior(true, null)))
         }
     }.build
 
@@ -43,8 +44,8 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
         //println(s"players.toSeq = ${players}")
         //println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
         order match {
-            case "create"   => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
-            case "update"   => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
+            case "create"   => createPlayer(args.drop(1))   //remove first arg which is obviously 'create'
+            case "update"   => updatePlayer(args.drop(1))   //remove first arg which is obviously 'update'
             case "reinject" => reInjectPlayer(args.drop(1)) //remove first arg which is obviously 'update'
             case "list"     =>
                 val content = players.toArray
