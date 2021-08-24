@@ -14,7 +14,6 @@ package fr.linkit.plugin.debug.commands
 
 import fr.linkit.api.connection.cache.SharedCacheManager
 import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule
-import fr.linkit.api.connection.cache.obj.behavior.member.MethodParameterBehavior
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
 import fr.linkit.engine.connection.cache.obj.behavior.SynchronizedObjectBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, SynchronizedObjectBehaviorBuilder, SynchronizedObjectBehaviorStoreBuilder}
@@ -29,7 +28,7 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
 
     private val tree = new SynchronizedObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
         behaviors += new SynchronizedObjectBehaviorBuilder[ListBuffer[Player]]() {
-            annotateAllMethods("+=") and "addOne" by MethodControl(BasicInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(MethodParameterBehavior(true, null, null)))
+            annotateAllMethods("+=") and "addOne" by new MethodControl(BasicInvocationRule.BROADCAST, invokeOnly = true)
         }
     }.build
 
@@ -44,8 +43,8 @@ class PlayerCommand(cacheHandler: SharedCacheManager, currentIdentifier: String)
         //println(s"players.toSeq = ${players}")
         //println(s"players.getChoreographer.isMethodExecutionForcedToLocal = ${players.getChoreographer.isMethodExecutionForcedToLocal}")
         order match {
-            case "create"   => createPlayer(args.drop(1))   //remove first arg which is obviously 'create'
-            case "update"   => updatePlayer(args.drop(1))   //remove first arg which is obviously 'update'
+            case "create"   => createPlayer(args.drop(1)) //remove first arg which is obviously 'create'
+            case "update"   => updatePlayer(args.drop(1)) //remove first arg which is obviously 'update'
             case "reinject" => reInjectPlayer(args.drop(1)) //remove first arg which is obviously 'update'
             case "list"     =>
                 val content = players.toArray
